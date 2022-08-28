@@ -511,7 +511,7 @@ def get_content_data(ip_addr, playing_content_id):
             if not ret:
                 logger.info(f"tweetに失敗しました。対象: {title}")
             logger.info(
-                f"エラー：「{item["channelName"]}」は定義されていないチャンネルのため、空ファイルを作成します。"
+                f"エラー：「{item['channelName']}」は定義されていないチャンネルのため、空ファイルを作成します。"
             )
             logger.info(f"ファイル名:{base_file}.xml")
 
@@ -667,7 +667,7 @@ def twitter_write(ch_name, start_date_time, total_minutes, title, line_count):
 
 def open_comment_viewer(jkid, start_date_time, end_date_time, total_minutes, title):
 
-    base_file = f"{jk_names[jkid]}_{start_date_time.strftime("%Y%m%d_%H%M%S")}_{total_minutes}_{title}"
+    base_file = f"{jk_names[jkid]}_{start_date_time.strftime('%Y%m%d_%H%M%S')}_{total_minutes}_{title}"
     logfile = os.path.join(kakolog_dir, f"{base_file}.xml")
     logfile_limit = os.path.join(kakolog_dir, f"{base_file}_limit.xml")
 
