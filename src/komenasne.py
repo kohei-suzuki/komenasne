@@ -538,12 +538,25 @@ def get_kakolog_api(start_date_time, end_date_time, title, jkid, total_minutes, 
     line_count = 0
     for xml_line in kakolog.iter_lines():
         line = rewrite_vpos(start_date_unixtime, xml_line.decode())
+        if line == '<title>503 Service Unavailable</title>':
+            logger.info('エラー：ニコニコ実況過去ログAPIのサイトから取得できません。')
+            return False
+        # NGコマンドがあるとスキップ
+        is_skip = False
+        if ng_commands:
+            if '<chat ' in line and '</chat>' in line:
+                soup = BeautifulSoup(line, 'html.parser')
+                elems = soup.find('chat')
+                if 'mail' in elems.attrs:
+                    for x in elems.attrs['mail'].split(' '):
+                        if x.strip() in ng_commands:
+                            is_skip = True
+                            break
+            if is_skip == True:
+                continue
         lines.append(line)
         if "</chat>" in line:
             line_count += 1
-        if line == "<title>503 Service Unavailable</title>":
-            logger.error("エラー：ニコニコ実況過去ログAPIのサイトから取得できません。 503 Service Unavailable")
-            return False
 
     # # 過去ログAPIにログがないときは避難所から取得
     # if line_count < 1 and 1718000400 <= start_unixtime:
@@ -883,6 +896,12 @@ try:
     limit_ratio = int(ini["COMMENT"]["limit_ratio"])
 except KeyError:
     limit_ratio = 0
+
+# NGコマンド
+try:
+    ng_commands = [x.strip() for x in ini['COMMENT']['ng_commands'].split(',')]
+except KeyError:
+    ng_commands = []
 
 if not mode_silent:
     logger.info("starting..")
