@@ -903,6 +903,12 @@ try:
 except KeyError:
     ng_commands = []
 
+# コメント取得調整時間(秒)
+try:
+    adjustment_time = int(ini['COMMENT']['adjustment_time'])
+except KeyError:
+    adjustment_time = 15
+
 if not mode_silent:
     logger.info("starting..")
 
@@ -982,12 +988,12 @@ if args.channel != "None" or args.fixrec:
         else:
             plus_days = 0
         start_at = start_date + " " + str(start_hour) + ":" + start_min
-        start_date_time = parse(start_at) - datetime.timedelta(seconds=15) + datetime.timedelta(days=plus_days)
+        start_date_time = parse(start_at) - datetime.timedelta(seconds=adjustment_time) + datetime.timedelta(days=plus_days)
 
     if total_minutes >= 600:
         logger.info("エラー：600分以上は指定できません。")
         sys.exit(1)
-    end_date_time = start_date_time + datetime.timedelta(minutes=total_minutes) + datetime.timedelta(seconds=14)
+    end_date_time = start_date_time + datetime.timedelta(minutes=total_minutes) + datetime.timedelta(seconds=adjustment_time-1)
     # commenomi用のコメント再生処理
     open_comment_viewer(jkid, start_date_time, end_date_time, total_minutes, title)
     sys.exit(0)
