@@ -972,7 +972,7 @@ if args.channel != "None" or args.fixrec:
         )  # "2021-01-27 19:00"
         start_date_time = parse(start_at)
     else:
-        start_at = args.date_time  # "2021-01-27 19:00"
+        start_at = parse(args.date_time).strftime('%Y-%m-%d %H:%M') # "2021-01-27 19:00" 日時の表記ゆれを統一
         start_date, start_time = start_at.split(" ")
         start_hour, start_min = start_time.split(":")
         # しょぼいカレンダーの25:00等表記の対応
